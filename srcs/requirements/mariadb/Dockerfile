@@ -1,15 +1,13 @@
 FROM debian:bullseye
 
+RUN apt-get update && \
+    apt-get install -y mariadb-server && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY /conf/mariadb.conf /etc/mysql/conf.d/
+
 EXPOSE 3306
 
-RUN	apt update && \
-	apt install -y --no-install-recommends --no-install-suggests \
-	mariadb-server && \
-	rm -rf /var/lib/apt/lists/*
+RUN chmod +x /tools/server.sh
 
-COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/
-
-COPY	tools/setup.sh /bin/
-RUN	chmod +x /bin/setup.sh
-
-CMD	["setup.sh", "mysqld_safe"]
+CMD ["server.sh"]

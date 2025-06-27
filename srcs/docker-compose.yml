@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: requirements/nginx/.
+    restart: unless-stopped
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./home/jsobreir/data/web:/var/www/html
+    networks:
+      inception:
+  wordpress:
+    build: requirements/wordpress/.
+    restart: unless-stopped
+    container_name: wp-php
+    volumes:
+      - ./home/jsobreir/data/web:/var/www/html
+    networks:
+      inception:
+  mariadb:
+    build: requirements/mariadb/.
+    restart: unless-stopped
+    container_name: mariadb
+    volumes:
+      - ./home/jsobreir/data/database:/var/lib/mysql
+    networks:
+      inception:
+
+networks:
+  inception:

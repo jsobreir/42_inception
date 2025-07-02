@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   nginx:
     build: requirements/nginx/.
@@ -15,10 +13,15 @@ services:
     build: requirements/wordpress/.
     restart: unless-stopped
     container_name: wp-php
+    env_file:
+      - ../.env
     volumes:
       - ./home/jsobreir/data/web:/var/www/html
     networks:
       inception:
+    secrets:
+      - db_root_password
+      - db_password
   mariadb:
     build: requirements/mariadb/.
     restart: unless-stopped
@@ -27,6 +30,15 @@ services:
       - ./home/jsobreir/data/database:/var/lib/mysql
     networks:
       inception:
+    secrets:
+      - db_root_password
+      - db_password
 
 networks:
   inception:
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt

@@ -9,6 +9,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY /conf/www.conf /etc/php/7.4/fpm/pool.d/.
+COPY /conf/wp-config.php /var/www/html/
 
 COPY /tools/script.sh .
 

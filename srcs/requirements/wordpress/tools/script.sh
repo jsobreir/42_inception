@@ -1,6 +1,5 @@
 #!/bin/bash
 set -ex
-cd /var/www/html
 
 if [ ! -f /var/www/html/wp-config.php ]; then
   mv /tmp/wp-config.php /var/www/html/
@@ -44,7 +43,6 @@ if ! wp core is-installed --allow-root; then
 fi
 
 mkdir -p /run/php
-
 chown www-data:www-data /run/php
 
-exec $@
+exec "$@"

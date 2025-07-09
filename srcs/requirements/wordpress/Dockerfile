@@ -1,15 +1,21 @@
 FROM debian:bullseye
 
-EXPOSE 9000
 
-RUN apt-get update && \
-    apt-get install -y php-fpm \
-    php-mysqli \
-    curl && \
-    # Disable the default php-fpm service from starting automatically
-    # This prevents it from binding to port 9000 before your script runs
-    systemctl disable php7.4-fpm || true && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y install \
+	wget \
+	curl \
+	bash \
+	php \
+	php-cgi \
+	php-mysql \
+	php-fpm \
+	php-pdo \
+	php-gd php-cli \
+	php-mbstring \
+	redis \
+	php-redis \
+	&& rm -rf /var/lib/apt/lists/*
+
 
 COPY /conf/www.conf /etc/php/7.4/fpm/pool.d/.
 
@@ -19,4 +25,10 @@ COPY /tools/script.sh .
 
 RUN chmod +x script.sh
 
-CMD ["./script.sh", "php-fpm7.4", "-F"]
+ENTRYPOINT ["/script.sh"]
+
+WORKDIR /var/www/html/
+
+EXPOSE 9000
+
+CMD ["php-fpm7.4", "-F"]

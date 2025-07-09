@@ -1,44 +1,53 @@
 services:
   nginx:
     build: requirements/nginx/.
-    restart: unless-stopped
+    restart: on-failure
     container_name: nginx
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
-      - ./home/jsobreir/data/web:/var/www/html
+      - wordpress_files:/var/www/html
+    init: true
     networks:
       inception:
+    env_file:
+      - ../.env
+    depends_on:
+      - wordpress
   wordpress:
     build: requirements/wordpress/.
-    restart: unless-stopped
+    restart: on-failure
     container_name: wp-php
+    volumes:
+      - wordpress_files:/var/www/html
+    networks:
+      inception:
+    env_file:
+      - ../.env
+    init: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+  mariadb:
+    build: requirements/mariadb/.
+    restart: on-failure
+    container_name: mariadb
     env_file:
       - ../.env
     volumes:
-      - ./home/jsobreir/data/web:/var/www/html
+      - database:/var/lib/mysql
     networks:
       inception:
-    secrets:
-      - db_root_password
-      - db_password
-  mariadb:
-    build: requirements/mariadb/.
-    restart: unless-stopped
-    container_name: mariadb
-    volumes:
-      - ./home/jsobreir/data/database:/var/lib/mysql
-    networks:
-      inception:
-    secrets:
-      - db_root_password
-      - db_password
+    init: true
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   inception:
 
-secrets:
-  db_root_password:
-    file: ../secrets/db_root_password.txt
-  db_password:
-    file: ../secrets/db_password.txt
+volumes:
+  database:
+  wordpress_files:

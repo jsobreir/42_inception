@@ -1,20 +1,19 @@
-FROM debian:bullseye
+FROM	debian:bullseye
 
-RUN apt-get update && \
-    apt-get install -y mariadb-server && \
-    rm -rf /var/lib/apt/lists/*
+EXPOSE	3306
 
-COPY /conf/50-server.cnf /etc/mysql/mariadb.conf.d/.
+RUN		apt update && \
+		apt install -y --no-install-recommends --no-install-suggests \
+		mariadb-server && \
+		rm -rf /var/lib/apt/lists/*
 
-COPY /tools/init.sql /etc/mysql/init.sql
+RUN     mkdir -p /run/mysqld && \
+        chown mysql:mysql /run/mysqld && \
+        chmod 755 /run/mysqld
 
-RUN mkdir /run/mysqld
+COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
-# EXPOSE 3306
+COPY	tools/script.sh /bin/
+RUN		chmod +x /bin/script.sh
 
-
-COPY /tools/script.sh .
-
-RUN chmod +x script.sh
-
-CMD ["./script.sh"]
+CMD		["script.sh", "mysqld_safe"]

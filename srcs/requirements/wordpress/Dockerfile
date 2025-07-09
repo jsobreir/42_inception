@@ -1,6 +1,6 @@
 FROM debian:bullseye
 
-# EXPOSE 9000
+EXPOSE 9000
 
 RUN apt-get update && \
     apt-get install -y php-fpm \
@@ -9,7 +9,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY /conf/www.conf /etc/php/7.4/fpm/pool.d/.
-COPY /conf/wp-config.php /var/www/html/
+
+COPY /conf/wp-config.php /tmp/
 
 COPY /tools/script.sh .
 

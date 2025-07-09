@@ -2,17 +2,17 @@ all:
 	(cd ./srcs/ && docker compose up)
 
 re:
-	(cd ./srcs/ && docker compose down)
+	(cd ./srcs/ && docker compose down -v)
 	(cd ./srcs/ && docker compose build)
 	(cd ./srcs/ && docker compose up)
 
 no-cache:
-	(cd ./srcs/ && docker compose down)
+	(cd ./srcs/ && docker compose down -v)
 	(cd ./srcs/ && docker compose build --no-cache)
 	(cd ./srcs/ && docker compose up)
 
 clean:
-	(cd ./srcs/ && docker compose down)
+	(cd ./srcs/ && docker compose down --rmi all -v)
 	(cd ./srcs/ && docker system prune -a --volumes)
 	(cd ./srcs/ && docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && docker rmi $(docker images -q) --force)
 

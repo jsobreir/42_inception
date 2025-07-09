@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 cd /var/www/html
 
 if [ ! -f /var/www/html/wp-config.php ]; then
@@ -35,14 +35,16 @@ if ! wp core is-installed --allow-root; then
   --admin_user="$WORDPRESS_ADMIN_USER" \
   --admin_password="$WORDPRESS_ADMIN_PASSWORD" \
   --admin_email="$WORDPRESS_ADMIN_EMAIL" \
-  --allow-root
+  --allow-root # Added --allow-root back
 
-  wp user create "$WORDPRESS_SUBSCRIBER_USER" "$WORDPRESS_SUBSCRIBER_EMAIL" \
-    --role=subscriber \
+  wp user create "$WORDPRESS_DB_USER" "$WORDPRESS_DB_USER_EMAIL" \
+    --role="$WORDPRESS_ROLE" \
     --user_pass="$WORDPRESS_DB_PASSWORD" \
-    --allow-root
+    --allow-root # Added --allow-root back
 fi
 
 mkdir -p /run/php
 
-php-fpm7.4 -F
+chown www-data:www-data /run/php
+
+exec $@

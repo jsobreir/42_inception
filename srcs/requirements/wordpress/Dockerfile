@@ -10,6 +10,7 @@ RUN apt-get update && apt-get -y install \
 	php-mysql \
 	php-fpm \
 	php-pdo \
+	sendmail \
 	php-gd php-cli \
 	php-mbstring \
 	redis \

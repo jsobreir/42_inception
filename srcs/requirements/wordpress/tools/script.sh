@@ -34,12 +34,12 @@ if ! wp core is-installed --allow-root; then
   --admin_user="$WORDPRESS_ADMIN_USER" \
   --admin_password="$WORDPRESS_ADMIN_PASSWORD" \
   --admin_email="$WORDPRESS_ADMIN_EMAIL" \
-  --allow-root # Added --allow-root back
+  --allow-root
 
   wp user create "$WORDPRESS_DB_USER" "$WORDPRESS_DB_USER_EMAIL" \
     --role="$WORDPRESS_ROLE" \
     --user_pass="$WORDPRESS_DB_PASSWORD" \
-    --allow-root # Added --allow-root back
+    --allow-root
 fi
 
 mkdir -p /run/php

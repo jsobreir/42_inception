@@ -59,7 +59,7 @@ run-nginx:
 	(cd ./srcs/requirements/mariadb/ && docker run --name nginx-container nginx)
 
 run-wordpress:
-	(cd ./srcs/requirements/mariadb/ && docker run --name wordpress-container wordpress)
+	(cd ./srcs/requirements/mariadb/ && docker run --name wp-php wordpress)
 
 run-mariadb:
 	(cd ./srcs/requirements/mariadb/ && docker run --name mariadb-container mariadb)

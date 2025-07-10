@@ -1,29 +1,29 @@
 all:
-	(cd ./srcs/ && docker compose up)
+	(docker compose -f ./srcs/docker-compose.yml up)
 
 re:
-	(cd ./srcs/ && docker compose down -v)
-	(cd ./srcs/ && docker compose build)
-	(cd ./srcs/ && docker compose up)
+	(docker compose -f ./srcs/docker-compose.yml down -v)
+	(docker compose -f ./srcs/docker-compose.yml build)
+	(docker compose -f ./srcs/docker-compose.yml up)
 
 no-cache:
-	(cd ./srcs/ && docker compose down -v)
-	(cd ./srcs/ && docker compose build --no-cache)
-	(cd ./srcs/ && docker compose up)
+	(docker compose -f ./srcs/docker-compose.yml down -v)
+	(docker compose -f ./srcs/docker-compose.yml build --no-cache)
+	(docker compose -f ./srcs/docker-compose.yml up)
 
 clean:
-	(cd ./srcs/ && docker compose down --rmi all -v)
-	(cd ./srcs/ && docker system prune -a --volumes)
-	(cd ./srcs/ && docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && docker rmi $(docker images -q) --force)
+	(docker compose -f ./srcs/docker-compose.yml down --rmi all -v)
+	(docker system prune -a --volumes)
+	(docker stop $(docker ps -aq) && docker rm $(docker ps -aq) && docker rmi $(docker images -q) --force)
 
 compose-build:
-	(cd ./srcs/ && docker compose up --build)
+	(docker compose -f ./srcs/docker-compose.yml up --build)
 
 compose-down:
-	(cd ./srcs/ && docker compose down)
+	(docker compose -f ./srcs/docker-compose.yml down)
 
 compose-up:
-	(cd ./srcs/ && docker compose up)
+	(docker compose -f ./srcs/docker-compose.yml up)
 
 image-build-nginx:
 	(cd ./srcs/requirements/nginx/ && docker build -t nginx .)

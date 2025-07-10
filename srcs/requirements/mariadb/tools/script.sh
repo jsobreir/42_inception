@@ -1,24 +1,25 @@
 #!/bin/bash
-set -e
+set -ex
+
 # if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "MariaDB data directory is empty. Performing initial setup..."
+echo "MariaDB data directory is empty. Performing initial setup..."
 
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
+mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
-    echo "Initial MariaDB data directory setup complete."
+echo "Initial MariaDB data directory setup complete."
 
-    echo "Starting MariaDB temporarily for initialization..."
-    /usr/sbin/mariadbd --user=mysql --skip-networking --skip-log-error &
-    MARIADB_PID=$!
+echo "Starting MariaDB temporarily for initialization..."
+/usr/sbin/mariadbd --user=mysql --skip-networking --skip-log-error &
+MARIADB_PID=$!
 
-    echo "Waiting for MariaDB to be ready..."
-    until mariadb -h localhost -u root -e "SELECT 1;" > /dev/null 2>&1; do
-      echo "MariaDB is unavailable - sleeping"
-      sleep 2
-    done
-    echo "MariaDB is up - executing initialization commands"
+echo "Waiting for MariaDB to be ready..."
+until mariadb -h localhost -u root -e "SELECT 1;" > /dev/null 2>&1; do
+  echo "MariaDB is unavailable - sleeping"
+  sleep 2
+done
+echo "MariaDB is up - executing initialization commands"
 
-    mariadb -v -u root << EOF
+mariadb -v -u root << EOF
 CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
 
 CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';

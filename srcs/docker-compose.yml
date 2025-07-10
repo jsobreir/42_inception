@@ -1,5 +1,6 @@
 services:
   nginx:
+    container_name: nginx
     build: 
       context: requirements/nginx/.
       args:
@@ -13,40 +14,39 @@ services:
         UNIT: ${UNIT}
         COMMON_NAME: ${COMMON_NAME}
     restart: on-failure
-    container_name: nginx
     ports:
       - "443:443"
     volumes:
-      - wordpress_files:/var/www/html
+      - wordpress:/var/www/html
     init: true
     networks:
       inception:
     env_file:
-      - ../.env
+      - .env
     depends_on:
       - wordpress
   wordpress:
+    container_name: wordpress
     build: requirements/wordpress/.
     restart: on-failure
-    container_name: wp-php
     volumes:
-      - wordpress_files:/var/www/html
+      - wordpress:/var/www/html
     networks:
       inception:
     ports:
       - "9000:9000"
     env_file:
-      - ../.env
+      - .env
     init: true
     depends_on:
       mariadb:
         condition: service_healthy
   mariadb:
+    container_name: mariadb
     build: requirements/mariadb/.
     restart: on-failure
-    container_name: mariadb
     env_file:
-      - ../.env
+      - .env
     ports:
       - "3306:3306"
     volumes:
@@ -65,4 +65,14 @@ networks:
 
 volumes:
   database:
-  wordpress_files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/data/database
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/data/wordpress
